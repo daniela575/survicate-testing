@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Northpeak — Home</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">▲ Northpeak</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="account.html">Account</a>
+    </nav>
+    <span id="authArea"></span>
+  </header>
+
+  <main>
+    <h1>Plan projects without the chaos</h1>
+    <p class="lead">Northpeak is a fake product. Its only job is to be a realistic website you can install Survicate onto.</p>
+
+    <button onclick="trackAction('trial_started')">Start free trial</button>
+    <button class="secondary" onclick="trackAction('demo_requested')">Request a demo</button>
+
+    <div class="cards">
+      <div class="card"><h3>Boards</h3><p>Organise work into simple boards.</p></div>
+      <div class="card"><h3>Docs</h3><p>Write and share docs with your team.</p></div>
+      <div class="card"><h3>Reports</h3><p>See progress at a glance.</p></div>
+    </div>
+  </main>
+
+  <div id="toast"></div>
+  <script src="app.js"></script>
+
+  <!-- ⬇⬇⬇ PHASE 2: your Survicate install snippet goes RIGHT HERE, just before </body>.
+       Copy it from your Survicate panel (it comes pre-filled with your Workspace Key).
+       Why here? The snippet must load on the page, and putting it last means it
+       doesn't block the page's own content from rendering first. -->
+
+</body>
+</html>

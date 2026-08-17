@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Northpeak — Pricing</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html">▲ Northpeak</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="account.html">Account</a>
+    </nav>
+    <span id="authArea"></span>
+  </header>
+
+  <main>
+    <h1>Pricing</h1>
+    <p class="lead">A separate page with its own URL — handy later for testing page-based survey targeting (e.g. "only show on /pricing").</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Free</h3><div class="price">$0</div>
+        <button class="secondary" onclick="trackAction('plan_selected_free')">Choose Free</button>
+      </div>
+      <div class="card">
+        <h3>Pro</h3><div class="price">$12</div>
+        <button onclick="trackAction('plan_selected_pro')">Choose Pro</button>
+      </div>
+      <div class="card">
+        <h3>Team</h3><div class="price">$29</div>
+        <button onclick="trackAction('plan_selected_team')">Choose Team</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast"></div>
+  <script src="app.js"></script>
+
+  <!-- ⬇⬇⬇ PHASE 2: paste the SAME Survicate snippet here too, before </body>.
+       Note the reality this teaches: on a hand-built multi-page site you must add
+       the snippet to EVERY page. That's exactly why real sites use a shared
+       template/footer include or Google Tag Manager instead. -->
+
+</body>
+</html>
