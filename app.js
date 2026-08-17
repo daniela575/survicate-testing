@@ -1,4 +1,4 @@
-/* Northpeak app logic — plain vanilla JS. No Survicate here yet.
+/* Kufel app logic — plain vanilla JS. No Survicate here yet.
    This file holds the "real" site behaviour: a fake login and a few
    user actions. Later (Phase 3) these are the exact hooks where
    Survicate SDK calls will go — the spots are marked with  // SURVICATE LATER */
