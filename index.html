@@ -39,5 +39,15 @@
        Why here? The snippet must load on the page, and putting it last means it
        doesn't block the page's own content from rendering first. -->
 
+  <script src="https://js.appboycdn.com/web-sdk/5.7.0/braze.min.js"></script>
+<script>
+  braze.initialize('Yf1c23824-266d-46dd-9ca9-f72ac9dbda54', {
+    baseUrl: "sdk.iad-03.braze.com",
+    enableLogging: true
+  });
+  braze.automaticallyShowInAppMessages();
+  braze.openSession();
+</script>
+
 </body>
 </html>
