@@ -72,3 +72,14 @@ function toast(msg) {
 renderAuth();
 renderAccount();
 
+// PHASE 3 – identyfikacja odwiedzającego dla testu Cloud Mode
+(function () {
+  function identify() {
+    window._sva.setVisitorTraits({ user_id: '1999' });
+  }
+  if (window._sva && window._sva.setVisitorTraits) {
+    identify();                                   // SDK już gotowy
+  } else {
+    window.addEventListener('SurvicateReady', identify); // poczekaj aż się załaduje
+  }
+})();
