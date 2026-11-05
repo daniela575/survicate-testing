@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kufel — Book a visit (Segment install)</title>
+
+<!-- Segment analytics.js. This is the ONLY install on this page: Segment loads Survicate via the "Survicate (Actions)" destination. -->
+<script>
+!function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","screen","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware","register"];analytics.factory=function(e){return function(){if(window[i].initialized)return window[i][e].apply(window[i],arguments);var n=Array.prototype.slice.call(arguments);if(["track","screen","alias","group","page","identify"].indexOf(e)>-1){var c=document.querySelector("link[rel='canonical']");n.push({__t:"bpc",c:c&&c.getAttribute("href")||void 0,p:location.pathname,u:location.href,s:location.search,t:document.title,r:document.referrer})}n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){var key=analytics.methods[n];analytics[key]=analytics.factory(key)}analytics.load=function(key,n){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.setAttribute("data-global-segment-analytics-key",i);t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r);analytics._loadOptions=n};analytics._writeKey="lg3UYCi9UP0A7tWhB3mPXDauJzVXNPwy";;analytics.SNIPPET_VERSION="5.2.0";
+analytics.load("lg3UYCi9UP0A7tWhB3mPXDauJzVXNPwy");
+analytics.page();
+}}();
+</script>
+
+<style>
+  :root { --ink:#101828; --muted:#667085; --line:#EAECF0; --accent:#2E6F5E; --bg:#F9FAFB; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+  header { padding:16px 20px; background:#fff; border-bottom:1px solid var(--line); font-weight:700; }
+  main { max-width:520px; margin:0 auto; padding:20px 16px 120px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:16px; }
+  h1 { font-size:22px; margin:0 0 4px; } p { color:var(--muted); margin:0 0 16px; }
+  label { display:block; font-size:14px; font-weight:600; margin:12px 0 6px; }
+  select, input { width:100%; padding:12px; border:1px solid var(--line); border-radius:10px; font-size:16px; background:#fff; }
+  button { width:100%; margin-top:16px; padding:14px; border:0; border-radius:12px; background:var(--accent); color:#fff; font-size:16px; font-weight:600; cursor:pointer; }
+  button.secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
+  #log { font:12px/1.5 ui-monospace,Menlo,monospace; background:#0B1220; color:#D1FADF; border-radius:12px; padding:12px; min-height:120px; white-space:pre-wrap; word-break:break-word; }
+  .pill { display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; background:#ECFDF3; color:#027A48; }
+</style>
+</head>
+<body>
+<header>Kufel Health <span class="pill">Segment install</span></header>
+<main>
+  <div class="card">
+    <h1>Book a visit</h1>
+    <p>Demo page: no Survicate snippet here. Segment loads it.</p>
+
+    <label for="user">Patient ID (test data only)</label>
+    <input id="user" value="test-user-001">
+
+    <label for="partner">Partner</label>
+    <select id="partner">
+      <option value="gm_direct">gm_direct</option>
+      <option value="partner_health_system">partner_health_system</option>
+      <option value="partner_retail">partner_retail</option>
+    </select>
+
+    <label for="visit">Visit type</label>
+    <select id="visit">
+      <option value="telehealth">telehealth</option>
+      <option value="in_person">in_person</option>
+    </select>
+
+    <button id="book">Complete booking</button>
+    <button id="reset" class="secondary">Reset visitor (start over)</button>
+  </div>
+
+  <div class="card">
+    <h1 style="font-size:16px">What's happening</h1>
+    <div id="log"></div>
+  </div>
+</main>
+
+<script>
+  var logEl = document.getElementById('log');
+  function log(msg) {
+    var t = new Date().toLocaleTimeString();
+    logEl.textContent = '[' + t + '] ' + msg + '\n' + logEl.textContent;
+  }
+
+  // 1) Confirm Segment loaded, then check whether Segment loaded Survicate.
+  analytics.ready(function () {
+    log('Segment analytics.js ready.');
+    var tries = 0;
+    var check = setInterval(function () {
+      tries++;
+      if (window._svc && window._svc.workspaceKey) {
+        clearInterval(check);
+        log('Survicate loaded by Segment (workspace key found via _svc).');
+      } else if (tries > 20) {
+        clearInterval(check);
+        log('Survicate not detected after 10s. Check the destination is enabled in Segment.');
+      }
+    }, 500);
+  });
+
+  // 2) Survicate event listeners -> forwarded to Segment.
+  //    This is the workaround for "views/dismissals in Segment": the customer's dev adds a few lines like these.
+  window.addEventListener('SurvicateReady', function () {
+    log('SurvicateReady fired.');
+    if (!window._sva || !window._sva.addEventListener) return;
+    window._sva.addEventListener('survey_displayed', function (surveyId) {
+      log('Survey displayed: ' + surveyId + ' -> analytics.track("Survey Displayed")');
+      analytics.track('Survey Displayed', { survey_id: surveyId });
+    });
+    window._sva.addEventListener('survey_closed', function (surveyId) {
+      log('Survey closed: ' + surveyId + ' -> analytics.track("Survey Closed")');
+      analytics.track('Survey Closed', { survey_id: surveyId });
+    });
+    window._sva.addEventListener('survey_completed', function (surveyId) {
+      log('Survey completed: ' + surveyId);
+    });
+  });
+
+  // 3) The "booking": identify (traits for targeting) + track (event that triggers the survey).
+  document.getElementById('book').addEventListener('click', function () {
+    var userId = document.getElementById('user').value;
+    var partner = document.getElementById('partner').value;
+    var visit = document.getElementById('visit').value;
+
+    analytics.identify(userId, { partner: partner, visit_type: visit });
+    log('analytics.identify("' + userId + '", { partner: "' + partner + '", visit_type: "' + visit + '" })');
+
+    analytics.track('booking_completed', { partner: partner, visit_type: visit });
+    log('analytics.track("booking_completed", { partner, visit_type })');
+  });
+
+  document.getElementById('reset').addEventListener('click', function () {
+    analytics.reset();
+    if (window._sva && window._sva.destroyVisitor) window._sva.destroyVisitor();
+    log('Visitor reset (Segment + Survicate). Reload the page to start clean.');
+  });
+</script>
+</body>
+</html>
