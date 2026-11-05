@@ -21,10 +21,11 @@ analytics.page();
   main { max-width:520px; margin:0 auto; padding:20px 16px 120px; }
   .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:16px; }
   h1 { font-size:22px; margin:0 0 4px; } p { color:var(--muted); margin:0 0 16px; }
-  label { display:block; font-size:14px; font-weight:600; margin:12px 0 6px; }
-  select, input { width:100%; padding:12px; border:1px solid var(--line); border-radius:10px; font-size:16px; background:#fff; }
-  button { width:100%; margin-top:16px; padding:14px; border:0; border-radius:12px; background:var(--accent); color:#fff; font-size:16px; font-weight:600; cursor:pointer; }
-  button.secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
+  /* Scoped to .card so the page's styles don't leak into the Survicate widget */
+  .card label { display:block; font-size:14px; font-weight:600; margin:12px 0 6px; }
+  .card select, .card input { width:100%; padding:12px; border:1px solid var(--line); border-radius:10px; font-size:16px; background:#fff; }
+  .card button { width:100%; margin-top:16px; padding:14px; border:0; border-radius:12px; background:var(--accent); color:#fff; font-size:16px; font-weight:600; cursor:pointer; }
+  .card button.secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
   #log { font:12px/1.5 ui-monospace,Menlo,monospace; background:#0B1220; color:#D1FADF; border-radius:12px; padding:12px; min-height:120px; white-space:pre-wrap; word-break:break-word; }
   .pill { display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; background:#ECFDF3; color:#027A48; }
 </style>
