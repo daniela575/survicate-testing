@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Kufel – hidden survey + language test</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 820px; margin: 30px auto; padding: 0 16px; color: #222; }
+    button { padding: 8px 14px; margin: 4px 4px 4px 0; cursor: pointer; }
+    pre { background: #f4f4f4; padding: 12px; overflow: auto; font-size: 12px; max-height: 360px; }
+    .box { border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; margin: 14px 0; }
+    code { background: #eee; padding: 1px 4px; }
+  </style>
+</head>
+<body>
+  <h1>Hidden survey + language test</h1>
+  <p>Survey <code>0e4a2a044d28a493</code> is hidden on this page. Nothing should pop up.</p>
+
+  <div class="box">
+    <strong>Language mode:</strong> <span id="mode"></span><br>
+    <a href="?lang=pl">?lang=pl</a> (forcedLanguage = pl) ·
+    <a href="?lang=en">?lang=en</a> (forcedLanguage = en) ·
+    <a href="?">no param</a> (no forced language)
+  </div>
+
+  <div class="box">
+    <button onclick="checkInstall()">1. Check install</button>
+    <button onclick="showMetadata()">2. Get question metadata</button>
+    <div id="form"></div>
+  </div>
+
+  <h3>Log</h3>
+  <pre id="log"></pre>
+
+  <script>
+    var SURVEY_ID = '0e4a2a044d28a493';
+    var lang = new URLSearchParams(location.search).get('lang');
+    document.getElementById('mode').textContent = lang ? 'forcedLanguage = "' + lang + '"' : 'none (browser/URL detection)';
+
+    function log(label, data) {
+      var el = document.getElementById('log');
+      el.textContent = '[' + new Date().toLocaleTimeString() + '] ' + label + '\n' +
+        (data === undefined ? '' : JSON.stringify(data, null, 2) + '\n') + '\n' + el.textContent;
+    }
+
+    // Settings must be set BEFORE the Survicate snippet loads
+    (function (opts) {
+      opts.hiddenSurveys = [SURVEY_ID];
+      if (lang) opts.forcedLanguage = lang;
+    })(window._sva = window._sva || {});
+
+    window.addEventListener('SurvicateReady', function () {
+      log('SurvicateReady fired');
+      // Fallback for reporting: language as a visitor attribute
+      _sva.setVisitorTraits({ test_language: lang || 'none' });
+      log('setVisitorTraits', { test_language: lang || 'none' });
+    });
+
+    function checkInstall() {
+      log('Install check', {
+        workspaceKey_svc: window._svc || null,
+        sdkLoaded: !!(window._sva && window._sva.submitAnswer),
+        navigatorLanguage: navigator.language
+      });
+    }
+
+    function showMetadata() {
+      try {
+        var points = _sva.getSurveyPointsMetadata(SURVEY_ID);
+        log('getSurveyPointsMetadata', points);
+        renderForm(points);
+      } catch (e) { log('ERROR getSurveyPointsMetadata', String(e)); }
+    }
+
+    function renderForm(points) {
+      var form = document.getElementById('form');
+      form.innerHTML = '<p><em>Our own UI, built from the metadata:</em></p>';
+      (points || []).forEach(function (p) {
+        var div = document.createElement('div');
+        div.className = 'box';
+        div.innerHTML = '<strong>Point ' + p.id + '</strong> (' + (p.type || p.answerType || '?') + ')<br>';
+        if (p.answers && p.answers.length) {
+          p.answers.forEach(function (a) {
+            var b = document.createElement('button');
+            b.textContent = 'answerId ' + (a.id !== undefined ? a.id : a);
+            b.onclick = function () { submit({ pointId: p.id, answerId: a.id !== undefined ? a.id : a }); };
+            div.appendChild(b);
+          });
+        } else {
+          var input = document.createElement('input');
+          input.placeholder = 'answer (NPS: 0–10, or text)';
+          var b = document.createElement('button');
+          b.textContent = 'Submit';
+          b.onclick = function () {
+            var v = input.value.trim();
+            submit({ pointId: p.id, answer: /^\d+$/.test(v) ? Number(v) : v });
+          };
+          div.appendChild(input); div.appendChild(b);
+        }
+        form.appendChild(div);
+      });
+    }
+
+    function submit(params) {
+      params.surveyId = SURVEY_ID;
+      try {
+        var r = _sva.submitAnswer(params);
+        log('submitAnswer sent', params);
+        if (r && r.then) r.then(function (x) { log('submitAnswer resolved', x); }, function (e) { log('submitAnswer rejected', String(e)); });
+      } catch (e) { log('ERROR submitAnswer', String(e)); }
+    }
+  </script>
+
+  <!-- Start of Survicate (www.survicate.com) code -->
+  <script type="text/javascript">
+    (function (w) {
+      var s = document.createElement('script');
+      s.src = 'https://survey.survicate.com/workspaces/11c75dbb4df6c4ffa48c45f5127b8356/web_surveys.js';
+      s.async = true;
+      var e = document.getElementsByTagName('script')[0];
+      e.parentNode.insertBefore(s, e);
+    })(window);
+  </script>
+  <!-- End of Survicate code -->
+</body>
+</html>
